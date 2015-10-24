@@ -587,4 +587,9 @@ if __name__ == "__main__":
         exec(exec_str)
 
 
-
+def display_full(df):
+    """
+    truncation view로 들어가지 않고, df를 모두 출력한다.
+    """
+    with pd.option_context("display.max_rows", len(df)):
+        display(df)
