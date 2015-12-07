@@ -157,6 +157,14 @@ def plot_log_odds(target, feature, bins, f_range=None, M=10, figsize=(10, 3), di
     ax = axs[1]; LO.plot(ax=ax)
 
 
+def heatmap(df, cmap="OrRd", figsize=(10, 10)):
+    """draw heatmap of df"""
+
+    plt.figure(figsize=figsize)
+    plt.xticks(np.arange(0.5, len(df.columns), 1), df.columns)
+    plt.yticks(np.arange(0.5, len(df.index), 1), df.index)
+    plt.pcolor(df, cmap=cmap)
+
 ###############################################################################
 # data frame display
 ###############################################################################
@@ -587,9 +595,21 @@ if __name__ == "__main__":
         exec(exec_str)
 
 
+###############################################################################
+# display
+###############################################################################
 def display_full(df):
     """
     truncation view로 들어가지 않고, df를 모두 출력한다.
     """
-    with pd.option_context("display.max_rows", len(df)):
+    with pd.option_context("display.max_rows", len(df)), pd.option_context("display.max_columns", len(df.columns)):
         display(df)
+
+###############################################################################
+# data_util
+###############################################################################
+def read_tsv(filepath_or_buffer, **kwargs):
+    """seperator가 tab인 csv 읽기"""
+
+    return pd.read_csv(filepath_or_buffer, sep="\t", **kwargs)
+
