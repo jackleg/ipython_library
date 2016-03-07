@@ -149,11 +149,11 @@ def get_log_odds(target, feature, bins, f_range=None, M=10, display_head=False):
     return Y
 
 
-def plot_log_odds(target, feature, bins, f_range=None, M=10, figsize=(10, 3), display_head=False):
+def plot_log_odds(target, feature, bins, f_range=None, M=10, figsize=(10, 3), display_head=False, normed=True):
     LO = get_log_odds(target, feature, bins, f_range=f_range, M=M, display_head=display_head)
     fig, axs = plt.subplots(1, 2, figsize=figsize)
-    ax = axs[0]; feature[target==1].hist(bins=bins, alpha=0.4, color='red', normed=True, range=f_range, ax=ax)
-    ax = axs[0]; feature[target==0].hist(bins=bins, alpha=0.4, color='blue', normed=True, range=f_range, ax=ax)
+    ax = axs[0]; feature[target==1].hist(bins=bins, alpha=0.4, color='red', normed=normed, range=f_range, ax=ax)
+    ax = axs[0]; feature[target==0].hist(bins=bins, alpha=0.4, color='blue', normed=normed, range=f_range, ax=ax)
     ax = axs[1]; LO.plot(ax=ax)
 
 
