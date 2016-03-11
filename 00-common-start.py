@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 from IPython.core.display import HTML
 
 # packages by jay.han
-import strutil
-import statsutil
-import dfutil
-import util
+from jay import *
 
 plt.style.use('ggplot')
