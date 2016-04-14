@@ -125,6 +125,32 @@ def get_log_odds_bak(target, feature, bins, f_range=None, M=0.5):
 
 
 def get_log_odds(target, feature, bins, f_range=None, M=10, display_head=False):
+    '''return log ( P(target=1 | feature) / P(target=0 | feature) )
+       tn : targent name, 0 or 1
+       fn : x name 
+       f_range : x의 범위 제한
+       M : smoothing factor
+    '''
+    tn = target.name
+    fn = feature.name
+    X = pd.concat([target, feature], axis=1)
+    if f_range is not None:
+        X = X[(X[fn]>f_range[0]) & (X[fn]<f_range[1])]
+    if display_head:
+        X['_cut'] = pd.qcut(X[fn], bins).astype(str)
+        X['_cut'] = X._qcut.map(lambda x: float(x.split(',')[0][1:]))
+    else:
+        X['_cut'] = pd.qcut(X[fn], bins)
+
+    stat_df = X.groupby('_cut').aggregate({tn: {'good': np.sum, 'bad': lambda x: (1-x).sum()}})
+    stat_df.loc[:, "ratio"] = stat_df.apply(lambda row: np.log(row[tn]['good'] / float(row[tn]['bad'])), axis=1)
+    
+    base = np.log(float(X[tn].sum())/(1-X[tn]).sum())
+
+    return (stat_df['ratio'], base)
+
+    
+def get_log_odds_chris(target, feature, bins, f_range=None, M=10, display_head=False):
     '''return log ( P(feature=x | target=1) / P(feature=x | target=0) )
        tn : targent name, 0 or 1
        fn : x name 
@@ -150,11 +176,14 @@ def get_log_odds(target, feature, bins, f_range=None, M=10, display_head=False):
 
 
 def plot_log_odds(target, feature, bins, f_range=None, M=10, figsize=(10, 3), display_head=False, normed=True):
-    LO = get_log_odds(target, feature, bins, f_range=f_range, M=M, display_head=display_head)
-    fig, axs = plt.subplots(1, 2, figsize=figsize)
+    LO, base = get_log_odds(target, feature, bins, f_range=f_range, M=M, display_head=display_head)
+    fig, axs = plt.subplots(2, 1, figsize=figsize)
     ax = axs[0]; feature[target==1].hist(bins=bins, alpha=0.4, color='red', normed=normed, range=f_range, ax=ax)
     ax = axs[0]; feature[target==0].hist(bins=bins, alpha=0.4, color='blue', normed=normed, range=f_range, ax=ax)
+
     ax = axs[1]; LO.plot(ax=ax)
+    ax.axhline(base)
+    display(LO)
 
 
 def heatmap(df, cmap="OrRd", figsize=(10, 10)):
