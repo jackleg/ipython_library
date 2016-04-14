@@ -180,8 +180,11 @@ def plot_log_odds(target, feature, bins, f_range=None, M=10, figsize=(10, 3), di
     fig, axs = plt.subplots(2, 1, figsize=figsize)
     ax = axs[0]; feature[target==1].hist(bins=bins, alpha=0.4, color='red', normed=normed, range=f_range, ax=ax)
     ax = axs[0]; feature[target==0].hist(bins=bins, alpha=0.4, color='blue', normed=normed, range=f_range, ax=ax)
+    ax.set_xlabel(feature.name)
 
     ax = axs[1]; LO.plot(ax=ax)
+    ax.set_xlabel('%s_cut' % feature.name)
+    ax.set_ylabel(r'$log(P(good) / P(bad))$')
     ax.axhline(base)
     display(LO)
 
