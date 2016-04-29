@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #!coding=utf8
 
+import csv
 import sys, urllib, urllib2, os, subprocess, time, math, random
 import re
 import threading
@@ -641,7 +642,16 @@ def display_full(df):
 # data_util
 ###############################################################################
 def read_tsv(filepath_or_buffer, **kwargs):
-    """seperator가 tab인 csv 읽기"""
+    """seperator가 tab인 csv 읽기
+    
+    아래와 같은 옵션이 default로 셋팅된 read_csv의 wrapper.
+    sep = tab
+    header = None
+    quoting = csv.QUOTE_NONE
+    """
+    sep = "\t" if "sep" not in kwargs else kwargs.pop("sep")
+    header = None if "header" not in kwargs else kwargs.pop("header")
+    quoting = csv.QUOTE_NONE if "quoting" not in kwargs else kwargs.pop("quoting")
 
-    return pd.read_csv(filepath_or_buffer, sep="\t", **kwargs)
+    return pd.read_csv(filepath_or_buffer, sep=sep, header=header, quoting=quoting, **kwargs)
 
