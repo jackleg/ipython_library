@@ -648,10 +648,11 @@ def read_tsv(filepath_or_buffer, **kwargs):
     sep = tab
     header = None
     quoting = csv.QUOTE_NONE
+	encoding = utf8
     """
     sep = "\t" if "sep" not in kwargs else kwargs.pop("sep")
     header = None if "header" not in kwargs else kwargs.pop("header")
     quoting = csv.QUOTE_NONE if "quoting" not in kwargs else kwargs.pop("quoting")
-
-    return pd.read_csv(filepath_or_buffer, sep=sep, header=header, quoting=quoting, **kwargs)
+	encoding = "utf8" if "encoding" not in kwargs else kwargs.pop("encoding")
+    return pd.read_csv(filepath_or_buffer, sep=sep, header=header, quoting=quoting, encoding=encoding, **kwargs)
 
